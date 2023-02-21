@@ -56,18 +56,18 @@ class _HomeState extends State<Home> {
                         child: Container(
                           height: 150.0,
                           width: double.infinity,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage("assets/images/cloth_faded.png"),
-                            ),
-                          ),
+                          // decoration: BoxDecoration(
+                          //   image: DecorationImage(
+                          //     image: AssetImage("assets/images/house2.png"),
+                          //   ),
+                          // ),
                         ),
                       ),
                       Container(
                         child: Padding(
                           padding: EdgeInsets.all(20.0),
                           child: Image.asset(
-                            "assets/images/illustration.png",
+                            "assets/images/cash_payment3.png",
                             scale: 1.1,
                           ),
                         ),
@@ -95,7 +95,7 @@ class _HomeState extends State<Home> {
                           children: [
                             SizedBox(height: 20.0),
                             Text(
-                              "Welcome to Laundree!",
+                              "Welcome to JasTip!",
                               style: Theme.of(context).textTheme.headline6!.copyWith(
                                 fontWeight: FontWeight.w600,
                                 color: Color.fromRGBO(19, 22, 33, 1),
@@ -105,7 +105,7 @@ class _HomeState extends State<Home> {
                               height: 10.0,
                             ),
                             Text(
-                              "This is the first version of our laundry app. Please sign in or create an account below.",
+                              "This is the first version of our JasTip app. Please sign in or create an account below.",
                               style: TextStyle(
                                 color: Color.fromRGBO(74, 77, 84, 1),
                                 fontSize: 14.0,

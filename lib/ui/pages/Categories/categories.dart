@@ -17,6 +17,7 @@ class _CategoriesState extends State<Categories> {
       appBar: AppBar(
         backgroundColor: Constants.primaryColor,
         centerTitle: true,
+        automaticallyImplyLeading: false,
         title: Text(
           "Categories",
           style: TextStyle(

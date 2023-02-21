@@ -16,6 +16,7 @@ class _JastipState extends State<Jastip> {
       appBar: AppBar(
         backgroundColor: Constants.primaryColor,
         centerTitle: true,
+        automaticallyImplyLeading: false,
         title: Text(
           "Jastip",
           style: TextStyle(

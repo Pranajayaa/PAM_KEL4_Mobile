@@ -10,6 +10,7 @@ import '../../../models/string_http_exception.dart';
 import '../../../provider/auth/auth.dart';
 import '../../../provider/auth/logout.dart';
 import '../../utils/constants.dart';
+import '../../utils/helper.dart';
 import '../../widgets/alert.dart';
 import '../../widgets/selectionProfile.dart';
 
@@ -82,6 +83,7 @@ class _ProfileState extends State<Profile> {
                               ),
                               onPressed: ()async{
                                 Logout();
+                                nextScreen(context, "/");
                               },
                               child: const Text(
                                 "Oke!",

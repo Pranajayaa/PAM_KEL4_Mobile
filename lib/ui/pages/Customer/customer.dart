@@ -51,6 +51,7 @@ class _CustomerState extends State<Customer> {
       appBar: AppBar(
         backgroundColor: Constants.primaryColor,
         centerTitle: true,
+        automaticallyImplyLeading: false,
         title: Text(
           "Customer",
           style: TextStyle(
