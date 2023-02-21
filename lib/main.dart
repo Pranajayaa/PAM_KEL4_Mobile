@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jastip/provider/customer/customer.dart';
 import 'package:jastip/ui/pages/dashboard.dart';
 import 'package:jastip/ui/pages/home.dart';
 import 'package:jastip/ui/pages/login.dart';
@@ -21,6 +22,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(
           value: Auth(),
+        ),
+        ChangeNotifierProvider.value(
+          value: Customers(),
         )
       ],
       child: Consumer(
@@ -32,6 +36,7 @@ class MyApp extends StatelessWidget {
                   debugShowCheckedModeBanner: false,
                   title: "Flutter Laundry UI",
                   theme: ThemeData(
+                    primaryColor: Constants.primaryColor,
                     scaffoldBackgroundColor: Constants.scaffoldBackgroundColor,
                     visualDensity: VisualDensity.adaptivePlatformDensity,
                     textTheme: GoogleFonts.poppinsTextTheme(),
