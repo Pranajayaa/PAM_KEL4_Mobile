@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:jastip/models/Customer/modelCustomer.dart';
 import 'package:jastip/provider/customer/customer.dart';
 import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
 
 import '../../../models/string_http_exception.dart';
 import '../../utils/constants.dart';
+import '../../utils/helper.dart';
 import '../../widgets/alert.dart';
 
 
@@ -38,6 +41,94 @@ class _CustomerState extends State<Customer> {
     });
   }
 
+  choiceAction(String value, name, id)async{
+    if(value == "edit"){
+      setState(() {
+
+      });
+    }else if(value == "delete"){
+      setState(() {
+        dialogDelete(name, id);
+      });
+    }
+  }
+
+  Future dialogDelete(String name, id) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+                'Delete $name ?',
+                style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black
+                  ),
+                )
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                    'Cancel',
+                    style: GoogleFonts.poppins(
+                      textStyle: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red
+                      ),
+                    )
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              TextButton(
+                child: Text(
+                    'Ok',
+                    style: GoogleFonts.poppins(
+                      textStyle: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue
+                      ),
+                    )
+                ),
+                onPressed:(){
+                  deleteData(id.toString());
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  deleteData(String id)async{
+    ToastContext().init(context);
+    setState((){
+      isLoading = true;
+    });
+    try {
+      await Provider.of<Customers>(context, listen: false).deleteCustomer(id);
+    }on StringHttpException catch(error){
+      var errorMessage = error.toString();
+      sweetAlert(errorMessage, context);
+    }catch(e, s){
+      sweetAlert("Error \n $e!!", context);
+      print(s.toString());
+    }
+    setState(() {
+      bool? status = Provider.of<Customers>(context, listen: false).statDelete;
+      if(status!){
+        Navigator.pop(context);
+        Toast.show("Data Berhasil di Hapus !", duration: Toast.lengthLong, gravity:  Toast.bottom);
+        getData();
+      }
+      isLoading = false;
+    });
+  }
+
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
@@ -60,15 +151,29 @@ class _CustomerState extends State<Customer> {
             fontSize: 18.0,
           ),
         ),
+        actions: [
+          GestureDetector(
+              onTap: (){
+                nextScreen(context, "/input-customer");
+              },
+              child: Padding(
+                padding: EdgeInsets.only(right: 10),
+                child:  Icon(Icons.add),
+              )
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             isLoading
-            ? Center(
-              child: SpinKitThreeBounce(
-                  color: Constants.primaryColor,
-                  size: 30
+            ? Padding(
+              padding: EdgeInsets.only(top: 40),
+              child: Center(
+                child: SpinKitThreeBounce(
+                    color: Constants.primaryColor,
+                    size: 30
+                ),
               ),
             )
             : ListView.builder(
@@ -122,6 +227,7 @@ class _CustomerState extends State<Customer> {
                               ),
                             ),
                             onSelected: (value){
+                              choiceAction(value, cust[index].name, cust[index].id);
                             },
                             offset: Offset(0, 30),
                             itemBuilder: (context) {

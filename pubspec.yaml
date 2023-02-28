@@ -48,6 +48,11 @@ dependencies:
   sweetalertv2:
   flutter_spinkit:
   page_transition:
+  toast: ^0.3.0
+  search_choices: ^2.2.5
+  dotted_border: ^2.0.0+3
+  image_picker:
+  badges: ^3.0.2
 
 dev_dependencies:
   flutter_test:

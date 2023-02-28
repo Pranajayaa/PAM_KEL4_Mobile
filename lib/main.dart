@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jastip/provider/category/category.dart';
 import 'package:jastip/provider/customer/customer.dart';
+import 'package:jastip/provider/jastip/jastip.dart';
+import 'package:jastip/ui/pages/Customer/input_customer.dart';
+import 'package:jastip/ui/pages/Jastip/input_jastip.dart';
 import 'package:jastip/ui/pages/dashboard.dart';
 import 'package:jastip/ui/pages/home.dart';
 import 'package:jastip/ui/pages/login.dart';
@@ -25,6 +29,12 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: Customers(),
+        ),
+        ChangeNotifierProvider.value(
+          value: Category(),
+        ),
+        ChangeNotifierProvider.value(
+          value: JastipData(),
         )
       ],
       child: Consumer(
@@ -73,6 +83,14 @@ Route<dynamic> _onGenerateRoute(RouteSettings settings) {
     case "/single-order":
       return MaterialPageRoute(builder: (BuildContext context) {
         return SingleOrder();
+      });
+    case "/input-customer":
+      return MaterialPageRoute(builder: (BuildContext context) {
+        return InputCustomer();
+      });
+    case "/input-jastip":
+      return MaterialPageRoute(builder: (BuildContext context) {
+        return InputJastip();
       });
     default:
       return MaterialPageRoute(builder: (BuildContext context) {

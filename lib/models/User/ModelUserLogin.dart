@@ -28,9 +28,9 @@ class Data {
   String? name;
   String? username;
   String? email;
-  Null? emailVerifiedAt;
-  Null? phone;
-  Null? picture;
+  String? emailVerifiedAt;
+  String? phone;
+  String? picture;
   String? createdAt;
   String? updatedAt;
 

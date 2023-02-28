@@ -1,27 +1,27 @@
-
-
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
-import 'package:jastip/models/Customer/modelCustomer.dart';
+import 'package:flutter/material.dart';
+import 'package:jastip/models/category/ModelCategory.dart';
 import 'package:http/http.dart' as http;
 import '../../models/string_http_exception.dart';
 import '../url_api.dart';
 
-class Customers with ChangeNotifier{
-  List<ModelCustomer> listCostumer = [];
+
+
+class Category with ChangeNotifier{
+  List<ModelCategory> listCategory = [];
   bool? statPost = false;
   bool? statDelete = false;
 
-  Future<void> getCustomer()async{
-    String url = UrlApi().getCustomer;
+  Future<void> getCategory()async{
+    String url = UrlApi().getCategory;
     try{
       final response = await http.get(Uri.parse(url));
       if(response.statusCode == 200){
         final responseData = json.decode(response.body);
         final datah = responseData['data'];
         Iterable data = datah;
-        listCostumer = data.map((e) => ModelCustomer.fromJson(e)).toList();
+        listCategory = data.map((e) => ModelCategory.fromJson(e)).toList();
       }else{
         throw StringHttpException("Something Went Wrong !");
       }
@@ -30,21 +30,19 @@ class Customers with ChangeNotifier{
     }
   }
 
-  Future<void> postCustomer(String personalShoperId, String name, String phone, String email, String status, id)async{
+  Future<void> postCategory(String name, id)async{
     String url = id == "0"
-              ? UrlApi().createCustomer
-              : UrlApi().editCustomer + id;
+        ? UrlApi().createCategory
+        : UrlApi().editCategory + id;
+    print(url);
     try{
       final response = await http.post(
           Uri.parse(url),
-        body: {
-          "personal_shopper_id" : personalShoperId,
-          "name" : name,
-          "phone" : phone,
-          "email" : email,
-          "satatus" : status,
-        }
+          body: {
+            "name" : name,
+          }
       );
+      print(response.body);
       if(response.statusCode == 200){
         final responseData = json.decode(response.body);
         if(responseData["success"] == true){
@@ -61,8 +59,8 @@ class Customers with ChangeNotifier{
     }
   }
 
-  Future<void> deleteCustomer(String id)async{
-    String url = UrlApi().deleteCustomer + id;
+  Future<void> deleteCategory(String id)async{
+    String url = UrlApi().deleteCategory + id;
     try{
       final response = await http.get(Uri.parse(url));
       if(response.statusCode == 200){
@@ -80,5 +78,4 @@ class Customers with ChangeNotifier{
       rethrow;
     }
   }
-
 }
