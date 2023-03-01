@@ -113,6 +113,7 @@ class _LoginState extends State<Login> {
                                   prefixIcon: Icons.email_outlined,
                                   hintText: "Enter your Username",
                                   controller: username,
+                                  length: 0,
                                 ),
                                 SizedBox(
                                   height: 25.0,
@@ -123,6 +124,7 @@ class _LoginState extends State<Login> {
                                   obscureText: true,
                                   controller: password,
                                   hintText: "Enter your password",
+                                  length: 0,
                                 ),
                                 SizedBox(
                                   height: 15.0,
@@ -175,7 +177,7 @@ class _LoginState extends State<Login> {
         );
         break;
       case LoginStatus.signIn:
-        return Dashboard();
+        return Dashboard(1);
       break;
     }
   }

@@ -53,6 +53,7 @@ dependencies:
   dotted_border: ^2.0.0+3
   image_picker:
   badges: ^3.0.2
+  carousel_slider: ^4.2.1
 
 dev_dependencies:
   flutter_test:

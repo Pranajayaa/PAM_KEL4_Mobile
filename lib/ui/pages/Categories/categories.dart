@@ -28,7 +28,7 @@ class _CategoriesState extends State<Categories> {
       isLoading = true;
     });
     try{
-      await Provider.of<Category>(context,listen: false).getCategory();
+      await Provider.of<CategoryData>(context,listen: false).getCategory();
     }on StringHttpException catch(e){
       var errorMessage = e.toString();
       sweetAlert(errorMessage, context);
@@ -36,7 +36,7 @@ class _CategoriesState extends State<Categories> {
       sweetAlert("Something went wrong !! \n $error", context);
     }
     setState(() {
-      category = Provider.of<Category>(context,listen: false).listCategory;
+      category = Provider.of<CategoryData>(context,listen: false).listCategory;
       isLoading = false;
     });
   }
@@ -111,7 +111,7 @@ class _CategoriesState extends State<Categories> {
       isLoading = true;
     });
     try {
-      await Provider.of<Category>(context, listen: false).deleteCategory(id);
+      await Provider.of<CategoryData>(context, listen: false).deleteCategory(id);
     }on StringHttpException catch(error){
       var errorMessage = error.toString();
       sweetAlert(errorMessage, context);
@@ -120,7 +120,7 @@ class _CategoriesState extends State<Categories> {
       print(s.toString());
     }
     setState(() {
-      bool? status = Provider.of<Category>(context, listen: false).statDelete;
+      bool? status = Provider.of<CategoryData>(context, listen: false).statDelete;
       if(status!){
         Navigator.pop(context);
         Toast.show("Data Berhasil di Hapus !", duration: Toast.lengthLong, gravity:  Toast.bottom);
@@ -151,7 +151,7 @@ class _CategoriesState extends State<Categories> {
                       isLoading = true;
                     });
                     try {
-                      await Provider.of<Category>(context, listen: false).postCategory(cate.text.toString(), id);
+                      await Provider.of<CategoryData>(context, listen: false).postCategory(cate.text.toString(), id);
                     }on StringHttpException catch (error) {
                       var errorMessage = error.toString();
                       sweetAlert(errorMessage, context);
@@ -160,7 +160,7 @@ class _CategoriesState extends State<Categories> {
                       sweetAlert("Terjadi Kesalahan $l" + e.toString(), context);
                     }
                     setState(() {
-                      bool? success = Provider.of<Category>(context, listen: false).statPost;
+                      bool? success = Provider.of<CategoryData>(context, listen: false).statPost;
                       if(success!){
                         if(id == "0"){
                           Toast.show("Data Berhasil di Tambahkan !", duration: Toast.lengthShort, gravity:  Toast.bottom);
@@ -366,7 +366,7 @@ class _CategoriesState extends State<Categories> {
                     ),
                   )
                 : ListView.builder(
-                    padding: EdgeInsets.only(top: 30),
+                    padding: EdgeInsets.only(top: 30, bottom: 20),
                     physics: ScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: category.isEmpty ?0 :category.length,

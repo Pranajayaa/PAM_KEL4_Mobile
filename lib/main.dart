@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
           value: Customers(),
         ),
         ChangeNotifierProvider.value(
-          value: Category(),
+          value: CategoryData(),
         ),
         ChangeNotifierProvider.value(
           value: JastipData(),
@@ -78,7 +78,7 @@ Route<dynamic> _onGenerateRoute(RouteSettings settings) {
       });
     case "/dashboard":
       return MaterialPageRoute(builder: (BuildContext context) {
-        return Dashboard();
+        return Dashboard(1);
       });
     case "/single-order":
       return MaterialPageRoute(builder: (BuildContext context) {
@@ -86,11 +86,11 @@ Route<dynamic> _onGenerateRoute(RouteSettings settings) {
       });
     case "/input-customer":
       return MaterialPageRoute(builder: (BuildContext context) {
-        return InputCustomer();
+        return InputCustomer("0");
       });
     case "/input-jastip":
       return MaterialPageRoute(builder: (BuildContext context) {
-        return InputJastip();
+        return InputJastip("0");
       });
     default:
       return MaterialPageRoute(builder: (BuildContext context) {

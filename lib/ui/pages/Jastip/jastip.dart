@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:jastip/models/Jastip/ModelJastip.dart';
 import 'package:jastip/provider/jastip/jastip.dart';
+import 'package:jastip/ui/pages/Jastip/detailJastip.dart';
+import 'package:jastip/ui/pages/Jastip/input_jastip.dart';
 import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
 
 import '../../../models/string_http_exception.dart';
 import '../../utils/constants.dart';
@@ -36,6 +40,98 @@ class _JastipState extends State<Jastip> {
       jast = Provider.of<JastipData>(context,listen: false).listJastip;
       isLoading = false;
     });
+  }
+
+  Future dialogDelete(String name, id) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+                'Delete $name ?',
+                style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black
+                  ),
+                )
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                    'Cancel',
+                    style: GoogleFonts.poppins(
+                      textStyle: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red
+                      ),
+                    )
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              TextButton(
+                child: Text(
+                    'Ok',
+                    style: GoogleFonts.poppins(
+                      textStyle: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue
+                      ),
+                    )
+                ),
+                onPressed:(){
+                  deleteData(id.toString());
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  deleteData(String id)async{
+    ToastContext().init(context);
+    setState((){
+      isLoading = true;
+    });
+    try {
+      await Provider.of<JastipData>(context, listen: false).deleteJastip(id);
+    }on StringHttpException catch(error){
+      var errorMessage = error.toString();
+      sweetAlert(errorMessage, context);
+    }catch(e, s){
+      sweetAlert("Error \n $e!!", context);
+      print(s.toString());
+    }
+    setState(() {
+      bool? status = Provider.of<JastipData>(context, listen: false).statDelete;
+      if(status!){
+        Navigator.pop(context);
+        Toast.show("Data Berhasil di Hapus !", duration: Toast.lengthLong, gravity:  Toast.bottom);
+        getData();
+      }
+      isLoading = false;
+    });
+  }
+
+  choiceAction(String value, name, id)async{
+    if(value == "edit"){
+      setState(() {
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(
+                builder: (context) {
+                  return InputJastip(id.toString());
+                }));
+      });
+    }else if(value == "delete"){
+      setState(() {
+        dialogDelete(name, id);
+      });
+    }
   }
 
 
@@ -87,76 +183,84 @@ class _JastipState extends State<Jastip> {
                     ),
                   )
                 : ListView.builder(
-                    padding: EdgeInsets.only(top: 30),
+                    padding: EdgeInsets.only(top: 30,bottom: 20),
                     physics: ScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: jast.isEmpty ?0 :jast.length,
                     itemBuilder: ((BuildContext ctx, int index){
-                      return Container(
-                        margin:  EdgeInsets.only(right: 20, left: 20, top: 10),
-                        padding: EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                            color: Constants.scaffoldBackgroundColor,
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                blurRadius: 7,
-                                spreadRadius: 5,
-                                offset: Offset(0, 3),
-                                color: Colors.grey.withOpacity(0.5),
-                              ),
-                            ]),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Name : ",
-                                      style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 14.0,
-                                      ),
-                                    ),
-                                    Text(
-                                      "${jast[index].name}",
-                                      style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 14.0,
-                                      ),
-                                    ),
-                                  ],
+                      return GestureDetector(
+                        onTap: (){
+                          Navigator.pushReplacement(context,
+                              MaterialPageRoute(
+                                  builder: (context) {
+                                    return DetailJastip(jast[index].id.toString());
+                                  }));
+                        },
+                        child: Container(
+                          margin:  EdgeInsets.only(right: 20, left: 20, top: 10),
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              color: Constants.scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  blurRadius: 7,
+                                  spreadRadius: 5,
+                                  offset: Offset(0, 3),
+                                  color: Colors.grey.withOpacity(0.5),
                                 ),
-                                PopupMenuButton(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20.0),
+                              ]),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "${jast[index].name}",
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 14.0,
                                     ),
                                   ),
-                                  onSelected: (value){
+                                  PopupMenuButton(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20.0),
+                                      ),
+                                    ),
+                                    onSelected: (value){
+                                      choiceAction(value, jast[index].name, jast[index].id);
+                                    },
+                                    offset: Offset(0, 30),
+                                    itemBuilder: (context) {
+                                      return [
+                                        PopupMenuItem(
+                                          child: Text("Edit"),
+                                          value: 'edit',
+                                        ),
+                                        PopupMenuItem(
+                                          child: Text("Delete"),
+                                          value: 'delete',
+                                        ),
+                                      ];
+                                    },
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                jast[index].description!.length > 100
+                                    ? jast[index].description!.substring(0, 100)+'...'
+                                    : "${jast[index].description}",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 14.0,
+                                ),
+                              ),
 
-                                  },
-                                  offset: Offset(0, 30),
-                                  itemBuilder: (context) {
-                                    return [
-                                      PopupMenuItem(
-                                        child: Text("Edit"),
-                                        value: 'edit',
-                                      ),
-                                      PopupMenuItem(
-                                        child: Text("Delete"),
-                                        value: 'delete',
-                                      ),
-                                    ];
-                                  },
-                                )
-                              ],
-                            ),
-                            SizedBox(height: 20),
-                          ],
+                            ],
+                          ),
                         ),
                       );
                     }),

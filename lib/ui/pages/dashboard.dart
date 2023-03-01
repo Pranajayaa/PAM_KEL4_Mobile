@@ -22,6 +22,9 @@ import '../utils/helper.dart';
 import 'Jastip/jastip.dart';
 
 class Dashboard extends StatefulWidget {
+  final int index;
+
+  const Dashboard(this.index, {Key? key}) : super(key: key);
   @override
   _DashboardState createState() => _DashboardState();
 }
@@ -39,6 +42,21 @@ class _DashboardState extends State<Dashboard> {
     const Profile(),
   ];
 
+  set(){
+    setState(() {
+      activeIndex = widget.index;
+      print(widget.index);
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if(widget.index != null){
+      set();
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

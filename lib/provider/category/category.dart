@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:jastip/models/category/ModelCategory.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/string_http_exception.dart';
 import '../url_api.dart';
 
 
 
-class Category with ChangeNotifier{
+class CategoryData with ChangeNotifier{
   List<ModelCategory> listCategory = [];
   bool? statPost = false;
   bool? statDelete = false;
@@ -36,10 +37,18 @@ class Category with ChangeNotifier{
         : UrlApi().editCategory + id;
     print(url);
     try{
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String id2 = prefs.getInt("id").toString();
       final response = await http.post(
           Uri.parse(url),
-          body: {
+          body: id == "0"
+            ? {
             "name" : name,
+            "created_by" : id2
+          }
+            :{
+            "name" : name,
+            "edited_by" : id2
           }
       );
       print(response.body);

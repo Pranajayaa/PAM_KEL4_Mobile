@@ -13,6 +13,7 @@ class ModelJastip {
   String? updatedAt;
   int? updatedBy;
   List<PersonalShopperImages>? personalShopperImages;
+  Category? category;
 
   ModelJastip(
       {this.id,
@@ -28,7 +29,8 @@ class ModelJastip {
         this.createdBy,
         this.updatedAt,
         this.updatedBy,
-        this.personalShopperImages});
+        this.personalShopperImages,
+        this.category});
 
   ModelJastip.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -50,6 +52,9 @@ class ModelJastip {
         personalShopperImages!.add(new PersonalShopperImages.fromJson(v));
       });
     }
+    category = json['category'] != null
+        ? new Category.fromJson(json['category'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -70,6 +75,9 @@ class ModelJastip {
     if (this.personalShopperImages != null) {
       data['personal_shopper_images'] =
           this.personalShopperImages!.map((v) => v.toJson()).toList();
+    }
+    if (this.category != null) {
+      data['category'] = this.category!.toJson();
     }
     return data;
   }
@@ -107,6 +115,43 @@ class PersonalShopperImages {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['personal_shopper_id'] = this.personalShopperId;
+    data['name'] = this.name;
+    data['created_at'] = this.createdAt;
+    data['created_by'] = this.createdBy;
+    data['updated_at'] = this.updatedAt;
+    data['updated_by'] = this.updatedBy;
+    return data;
+  }
+}
+
+class Category {
+  int? id;
+  String? name;
+  String? createdAt;
+  int? createdBy;
+  String? updatedAt;
+  int? updatedBy;
+
+  Category(
+      {this.id,
+        this.name,
+        this.createdAt,
+        this.createdBy,
+        this.updatedAt,
+        this.updatedBy});
+
+  Category.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    createdAt = json['created_at'];
+    createdBy = json['created_by'];
+    updatedAt = json['updated_at'];
+    updatedBy = json['updated_by'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
     data['name'] = this.name;
     data['created_at'] = this.createdAt;
     data['created_by'] = this.createdBy;

@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jastip/models/Customer/modelCustomer.dart';
 import 'package:jastip/provider/customer/customer.dart';
+import 'package:jastip/ui/pages/Customer/input_customer.dart';
 import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
 
@@ -44,7 +45,11 @@ class _CustomerState extends State<Customer> {
   choiceAction(String value, name, id)async{
     if(value == "edit"){
       setState(() {
-
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(
+                builder: (context) {
+                  return InputCustomer(id.toString());
+                }));
       });
     }else if(value == "delete"){
       setState(() {
@@ -177,7 +182,7 @@ class _CustomerState extends State<Customer> {
               ),
             )
             : ListView.builder(
-              padding: EdgeInsets.only(top: 30),
+              padding: EdgeInsets.only(top: 30,bottom: 20),
               physics: ScrollPhysics(),
               shrinkWrap: true,
               itemCount: cust.isEmpty ?0 :cust.length,

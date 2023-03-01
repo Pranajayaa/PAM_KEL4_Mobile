@@ -8,9 +8,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jastip/models/category/ModelCategory.dart';
 import 'package:jastip/provider/category/category.dart';
+import 'package:jastip/provider/jastip/jastip.dart';
+import 'package:jastip/ui/pages/dashboard.dart';
 import 'package:provider/provider.dart';
 import 'package:search_choices/search_choices.dart';
+import 'package:toast/toast.dart';
 
+import '../../../models/Jastip/ModelJastip.dart';
 import '../../../models/string_http_exception.dart';
 import '../../utils/constants.dart';
 import '../../utils/helper.dart';
@@ -20,7 +24,8 @@ import '../../widgets/input_widget.dart';
 
 
 class InputJastip extends StatefulWidget {
-  const InputJastip({Key? key}) : super(key: key);
+  final String id;
+  const InputJastip(this.id, {Key? key}) : super(key: key);
 
   @override
   State<InputJastip> createState() => _InputJastipState();
@@ -36,6 +41,7 @@ class _InputJastipState extends State<InputJastip> {
   bool isLoading = false;
   List<ModelCategory> cate = [];
   List<XFile> imageFileList = [];
+  List<ModelJastip> jast = [];
   String? categoryId;
   String? category;
   final ImagePicker imagePicker = ImagePicker();
@@ -55,7 +61,7 @@ class _InputJastipState extends State<InputJastip> {
       isLoading = true;
     });
     try{
-      await Provider.of<Category>(context,listen: false).getCategory();
+      await Provider.of<CategoryData>(context,listen: false).getCategory();
     }on StringHttpException catch(e){
       var errorMessage = e.toString();
       sweetAlert(errorMessage, context);
@@ -63,7 +69,73 @@ class _InputJastipState extends State<InputJastip> {
       sweetAlert("Something went wrong !! \n $error", context);
     }
     setState(() {
-      cate = Provider.of<Category>(context,listen: false).listCategory;
+      cate = Provider.of<CategoryData>(context,listen: false).listCategory;
+      isLoading = false;
+    });
+  }
+
+  postJastip()async{
+    ToastContext().init(context);
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      await Provider.of<JastipData>(context, listen: false).postJastip(
+          categoryId!, providerName.text, name.text, desc.text, stock.text, temporaryStock.text,
+          wa.text, imageFileList, widget.id);
+    }on StringHttpException catch (error) {
+      var errorMessage = error.toString();
+      sweetAlert(errorMessage, context);
+    }catch (e, l) {
+      print("$l");
+      sweetAlert("Terjadi Kesalahan $l" + e.toString(), context);
+    }
+    setState(() {
+      bool? success = Provider.of<JastipData>(context, listen: false).statPost;
+      if(success!){
+        if(widget.id == "0"){
+          Toast.show("Data Berhasil di Tambahkan !", duration: Toast.lengthShort, gravity:  Toast.bottom);
+        }else{
+          Toast.show("Data Berhasil di Edit !", duration: Toast.lengthShort, gravity:  Toast.bottom);
+        }
+        Future.delayed(const Duration(seconds: 2), () {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(
+                  builder: (context) {
+                    return Dashboard(1);
+                  }));
+        });
+
+      }
+      isLoading = false;
+    });
+  }
+
+  getDataJastip()async{
+    setState(() {
+      isLoading = true;
+    });
+    try{
+      await Provider.of<JastipData>(context,listen: false).getJastipById(widget.id);
+    }on StringHttpException catch(e){
+      var errorMessage = e.toString();
+      sweetAlert(errorMessage, context);
+    }catch(error){
+      sweetAlert("Something went wrong !! \n $error", context);
+    }
+    setState(() {
+      jast = Provider.of<JastipData>(context,listen: false).listJastip;
+      providerName.text = jast[0].providerName!;
+      name.text = jast[0].name!;
+      desc.text = jast[0].description!;
+      stock.text = jast[0].stock!.toString();
+      temporaryStock.text = jast[0].temporaryStock!.toString();
+      wa.text = jast[0].waAdmin!;
+      categoryId = jast[0].categoryId.toString();
+      category = jast[0].category == null
+                ?""
+                :jast[0].category!.name;
+
       isLoading = false;
     });
   }
@@ -73,6 +145,9 @@ class _InputJastipState extends State<InputJastip> {
     // TODO: implement initState
     super.initState();
     getData();
+    if(widget.id != "0"){
+      getDataJastip();
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -161,7 +236,7 @@ class _InputJastipState extends State<InputJastip> {
                     child: InputWidget(
                       topLabel: "Provider Name",
                       prefixIcon: Icons.person,
-                      obscureText: true,
+                      obscureText: false,
                       controller: providerName,
                       hintText: "Enter your Provider Name",
                     ),
@@ -171,7 +246,7 @@ class _InputJastipState extends State<InputJastip> {
                     child: InputWidget(
                       topLabel: "Name Item",
                       prefixIcon: Icons.card_travel,
-                      obscureText: true,
+                      obscureText: false,
                       controller: name,
                       hintText: "Enter your Name Item",
                     ),
@@ -181,9 +256,10 @@ class _InputJastipState extends State<InputJastip> {
                     child: InputWidget(
                       topLabel: "Description",
                       prefixIcon: Icons.format_align_center,
-                      obscureText: true,
+                      obscureText: false,
                       controller: desc,
                       hintText: "Enter Description",
+                      length: 3,
                     ),
                   ),
                   Padding(
@@ -191,7 +267,7 @@ class _InputJastipState extends State<InputJastip> {
                     child: InputWidget(
                       topLabel: "Stock",
                       prefixIcon: Icons.shopping_bag,
-                      obscureText: true,
+                      obscureText: false,
                       controller: stock,
                       hintText: "Enter Stock",
                     ),
@@ -201,7 +277,7 @@ class _InputJastipState extends State<InputJastip> {
                     child: InputWidget(
                       topLabel: "Temporary Stock",
                       prefixIcon: Icons.shopping_bag,
-                      obscureText: true,
+                      obscureText: false,
                       controller: temporaryStock,
                       hintText: "Enter Temporary Stock",
                     ),
@@ -211,7 +287,7 @@ class _InputJastipState extends State<InputJastip> {
                     child: InputWidget(
                       topLabel: "Wa Admin",
                       prefixIcon: Icons.phone,
-                      obscureText: true,
+                      obscureText: false,
                       controller: wa,
                       hintText: "Enter Wa Admin",
                       number: TextInputType.number,
@@ -322,10 +398,10 @@ class _InputJastipState extends State<InputJastip> {
                     text: "Submit",
                     onPressed: () {
                       if(name.text.isEmpty || providerName.text.isEmpty || desc.text.isEmpty
-                      || stock.text.isEmpty || temporaryStock.text.isEmpty || wa.text.isEmpty  ){
+                      || stock.text.isEmpty || temporaryStock.text.isEmpty || wa.text.isEmpty || categoryId == null || imageFileList.isEmpty ){
                         sweetAlert("Complete Your Data !", context);
                       }else{
-                        // postData();
+                        postJastip();
                       }
 
                     },

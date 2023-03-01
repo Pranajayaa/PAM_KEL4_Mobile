@@ -9,6 +9,7 @@ class UrlApi {
   String createCustomer = "${url}api/createCustomers";
   String editCustomer = "${url}api/updateCustomers/";
   String deleteCustomer = "${url}api/destroyCustomers/";
+  String getCustomerById = "${url}api/editCustomers/";
 
   String getCategory = "${url}api/indexCategories";
   String createCategory = "${url}api/createCategories";

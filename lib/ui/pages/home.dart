@@ -143,7 +143,7 @@ class _HomeState extends State<Home> {
         );
         break ;
       case LoginStatus.signIn :
-        return Dashboard();
+        return Dashboard(0);
         break ;
     }
   }
